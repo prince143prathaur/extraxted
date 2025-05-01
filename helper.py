@@ -37,6 +37,7 @@ from pyrogram.types import Message
 from pyrogram import Client, filters
 from config import Config
 import logging
+from main import LOGGER
 import traceback
 
 def duration(filename):
