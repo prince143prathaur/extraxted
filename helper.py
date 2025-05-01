@@ -37,7 +37,6 @@ from pyrogram.types import Message
 from pyrogram import Client, filters
 from config import Config
 import logging
-from main import LOGGER
 import traceback
 
 def duration(filename):
@@ -231,8 +230,11 @@ async def send_vid(bot: Client, m: Message,cc,filename,thumb,name,prog):
     os.remove(f"{filename}.jpg")
     await reply.delete (True)
 
-async def log_error_to_telegram(bot, error_message):
+async def log_error_to_telegram(logger,bot, error_message):
     try:
-        await bot.send_message(Config.LOG_CHAT_ID, error_message)
+        if bot is not None:
+            await bot.send_message(Config.LOG_CHAT_ID, error_message)
+        else:
+            logger.error(error_message)
     except Exception as e:
-        LOGGER.error(f"Failed to send error message to Telegram: {e}")    
+        logger.error(f"Failed to send error message to Telegram: {e}")

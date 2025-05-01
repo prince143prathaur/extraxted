@@ -44,7 +44,7 @@ async def initialize_bot():
     except Exception as e:
         LOGGER.error(f"Error during bot initialization: {e}")
         try:
-           await log_error_to_telegram(None, f"Error during bot initialization: {traceback.format_exc()}") # Pass None for bot if it failed to initialize
+           await log_error_to_telegram(LOGGER, None, f"Error during bot initialization: {traceback.format_exc()}") # Pass None for bot if it failed to initialize
         except Exception as log_e:
            LOGGER.error(f"Failed to send initialization error to Telegram: {log_e}")
         return None # Return None if initialization failed
@@ -63,7 +63,7 @@ async def main():
     except Exception as e:
         LOGGER.error(f"Error during bot execution: {e}")
         try:
-           await log_error_to_telegram(bot, f"Error during bot execution: {traceback.format_exc()}")
+           await log_error_to_telegram(LOGGER, bot, f"Error during bot execution: {traceback.format_exc()}")
         except Exception as log_e:
            LOGGER.error(f"Failed to send execution error to Telegram: {log_e}")
 
