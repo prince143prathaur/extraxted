@@ -28,6 +28,14 @@ import asyncio, logging
 import tgcrypto
 from pyromod import listen
 from logging.handlers import RotatingFileHandler
+import traceback
+
+async def log_error_to_telegram(error_message):
+    try:
+        await bot.send_message(Config.LOG_CHAT_ID, error_message)
+    except Exception as e:
+        LOGGER.error(f"Failed to send error message to Telegram: {e}")
+
 
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(
@@ -50,15 +58,20 @@ prefixes = ["/", "~", "?", "!"]
 
 plugins = dict(root="plugins")
 if __name__ == "__main__" :
-    bot = Client(
-        "StarkBot",
-        bot_token=Config.BOT_TOKEN,
-        api_id=Config.API_ID,
-        api_hash=Config.API_HASH,
-        sleep_threshold=20,
-        plugins=plugins,
-        workers = 50
-    )
+    try:
+        bot = Client(
+            "StarkBot",
+            bot_token=Config.BOT_TOKEN,
+            api_id=Config.API_ID,
+            api_hash=Config.API_HASH,
+            sleep_threshold=20,
+            plugins=plugins,
+            workers=50
+        )
+    except Exception as e:
+        LOGGER.error(f"Error during bot initialization: {e}")
+        asyncio.get_event_loop().run_until_complete(log_error_to_telegram(f"Error during bot initialization: {traceback.format_exc()}"))
+
     
     async def main():
         await bot.start()
@@ -66,5 +79,10 @@ if __name__ == "__main__" :
         LOGGER.info(f"<--- @{bot_info.username} Started (c) STARKBOT --->")
         await idle()
     
-    asyncio.get_event_loop().run_until_complete(main())
+    try:
+        asyncio.get_event_loop().run_until_complete(main())
+    except Exception as e:
+        LOGGER.error(f"Error during bot execution: {e}")
+        asyncio.get_event_loop().run_until_complete(log_error_to_telegram(f"Error during bot execution: {traceback.format_exc()}"))
+
     LOGGER.info(f"<---Bot Stopped-->")
