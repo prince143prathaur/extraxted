@@ -49,8 +49,10 @@ from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
 from base64 import b64encode, b64decode
 
-@bot.on_message(filters.command(["samyak"]) & ~filters.edited)
+@bot.on_message(filters.command(["samyak"]))
 async def account(bot: Client, m: Message):
+    if m.edit_date:
+        return
     global cancel
     s = requests.Session()
     cancel = False

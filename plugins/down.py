@@ -51,8 +51,10 @@ from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
 from base64 import b64encode, b64decode
 
-@bot.on_message(filters.command(["down"]) & ~filters.edited)
+@bot.on_message(filters.command(["down"]))
 async def account_login(bot: Client, m: Message):
+    if m.edit_date:
+        return
     global cancel
     cancel = False
     editable = await m.reply_text("**Send Text file containing Urls**")

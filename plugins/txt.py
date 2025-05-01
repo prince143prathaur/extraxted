@@ -49,8 +49,10 @@ from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
 from base64 import b64encode, b64decode
 
-@bot.on_message(filters.command(["txt"]) & ~filters.edited)
+@bot.on_message(filters.command(["txt"]))
 async def account_login(bot: Client, m: Message):
+    if m.edit_date:
+        return
     global cancel
     cancel = False
     editable = await m.reply_text("Copy & Paste any one og above Institute Code Example like this **Ankit With Rojgar** :- **rozgarapinew.teachx.in**")
