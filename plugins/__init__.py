@@ -1,4 +1,11 @@
 from pyrogram import filters
+
+# Add this block to check for filters.edited
+try:
+    _ = filters.edited
+    print("INFO: filters.edited exists in plugins/__init__.py Pyrogram version.")
+except AttributeError:
+    print("ERROR: filters.edited does NOT exist in plugins/__init__.py Pyrogram version.")
 from pyrogram import Client as stark
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 from main import LOGGER, prefixes, AUTH_USERS
