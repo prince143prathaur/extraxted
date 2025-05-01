@@ -29,13 +29,7 @@ import tgcrypto
 from pyromod import listen
 from logging.handlers import RotatingFileHandler
 import traceback
-
-async def log_error_to_telegram(error_message):
-    try:
-        await bot.send_message(Config.LOG_CHAT_ID, error_message)
-    except Exception as e:
-        LOGGER.error(f"Failed to send error message to Telegram: {e}")
-
+form helpers import log_error_to_telegram
 
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(
@@ -70,8 +64,10 @@ if __name__ == "__main__" :
         )
     except Exception as e:
         LOGGER.error(f"Error during bot initialization: {e}")
-        asyncio.get_event_loop().run_until_complete(log_error_to_telegram(f"Error during bot initialization: {traceback.format_exc()}"))
-
+        try:
+           asyncio.get_event_loop().run_until_complete(log_error_to_telegram(f"Error during bot initialization: {traceback.format_exc()}"))
+       except Exception as log_e:
+           LOGGER.error(f"Failed to send initialization error to Telegram: {log_e}")
     
     async def main():
         await bot.start()
@@ -83,6 +79,9 @@ if __name__ == "__main__" :
         asyncio.get_event_loop().run_until_complete(main())
     except Exception as e:
         LOGGER.error(f"Error during bot execution: {e}")
-        asyncio.get_event_loop().run_until_complete(log_error_to_telegram(f"Error during bot execution: {traceback.format_exc()}"))
+        try:
+           asyncio.get_event_loop().run_until_complete(log_error_to_telegram(bot, f"Error during bot execution: {traceback.format_exc()}"))
+       except Exception as log_e:
+           LOGGER.error(f"Failed to send execution error to Telegram: {log_e}")
 
     LOGGER.info(f"<---Bot Stopped-->")
