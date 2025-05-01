@@ -29,7 +29,7 @@ import tgcrypto
 from pyromod import listen
 from logging.handlers import RotatingFileHandler
 import traceback
-form helper import log_error_to_telegram
+from helper import log_error_to_telegram
 
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(
