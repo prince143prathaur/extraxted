@@ -65,7 +65,7 @@ if __name__ == "__main__" :
     except Exception as e:
         LOGGER.error(f"Error during bot initialization: {e}")
         try:
-           log_error_to_telegram(bot, f"Error during bot initialization: {traceback.format_exc()}")
+           await log_error_to_telegram(bot, f"Error during bot initialization: {traceback.format_exc()}")
         except Exception as log_e:
            LOGGER.error(f"Failed to send initialization error to Telegram: {log_e}")
     
@@ -80,7 +80,7 @@ if __name__ == "__main__" :
     except Exception as e:
         LOGGER.error(f"Error during bot execution: {e}")
         try:
-           log_error_to_telegram(bot, f"Error during bot execution: {traceback.format_exc()}")
+           await log_error_to_telegram(bot, f"Error during bot execution: {traceback.format_exc()}")
         except Exception as log_e:
            LOGGER.error(f"Failed to send execution error to Telegram: {log_e}")
 
