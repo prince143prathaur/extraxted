@@ -66,7 +66,7 @@ if __name__ == "__main__" :
         LOGGER.error(f"Error during bot initialization: {e}")
         try:
            asyncio.get_event_loop().run_until_complete(log_error_to_telegram(f"Error during bot initialization: {traceback.format_exc()}"))
-       except Exception as log_e:
+        except Exception as log_e:
            LOGGER.error(f"Failed to send initialization error to Telegram: {log_e}")
     
     async def main():
@@ -81,7 +81,7 @@ if __name__ == "__main__" :
         LOGGER.error(f"Error during bot execution: {e}")
         try:
            asyncio.get_event_loop().run_until_complete(log_error_to_telegram(bot, f"Error during bot execution: {traceback.format_exc()}"))
-       except Exception as log_e:
+        except Exception as log_e:
            LOGGER.error(f"Failed to send execution error to Telegram: {log_e}")
 
     LOGGER.info(f"<---Bot Stopped-->")
