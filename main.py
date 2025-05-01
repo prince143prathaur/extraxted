@@ -1,26 +1,3 @@
-#  MIT License
-#
-#  Copyright (c) 2019-present Dan <https://github.com/delivrance>
-#
-#  Permission is hereby granted, free of charge, to any person obtaining a copy
-#  of this software and associated documentation files (the "Software"), to deal
-#  in the Software without restriction, including without limitation the rights
-#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-#  copies of the Software, and to permit persons to whom the Software is
-#  furnished to do so, subject to the following conditions:
-#
-#  The above copyright notice and this permission notice shall be included in all
-#  copies or substantial portions of the Software.
-#
-#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-#  SOFTWARE
-
-
 import os
 from config import Config
 from pyrogram import Client, idle
@@ -51,7 +28,8 @@ AUTH_USERS = [ int(chat) for chat in Config.AUTH_USERS.split(",") if chat != '']
 prefixes = ["/", "~", "?", "!"]
 
 plugins = dict(root="plugins")
-if __name__ == "__main__" :
+
+async def initialize_bot():
     try:
         bot = Client(
             "StarkBot",
@@ -62,21 +40,26 @@ if __name__ == "__main__" :
             plugins=plugins,
             workers=50
         )
+        return bot # Return the bot instance if initialization is successful
     except Exception as e:
         LOGGER.error(f"Error during bot initialization: {e}")
         try:
-           await log_error_to_telegram(bot, f"Error during bot initialization: {traceback.format_exc()}")
+           await log_error_to_telegram(None, f"Error during bot initialization: {traceback.format_exc()}") # Pass None for bot if it failed to initialize
         except Exception as log_e:
            LOGGER.error(f"Failed to send initialization error to Telegram: {log_e}")
-    
-    async def main():
+        return None # Return None if initialization failed
+
+async def main():
+    bot = await initialize_bot() # Await the initialization
+    if bot is None:
+        LOGGER.error("Bot initialization failed. Exiting.")
+        return # Exit if bot initialization failed
+
+    try:
         await bot.start()
         bot_info  = await bot.get_me()
         LOGGER.info(f"<--- @{bot_info.username} Started (c) STARKBOT --->")
         await idle()
-    
-    try:
-        asyncio.get_event_loop().run_until_complete(main())
     except Exception as e:
         LOGGER.error(f"Error during bot execution: {e}")
         try:
@@ -85,3 +68,6 @@ if __name__ == "__main__" :
            LOGGER.error(f"Failed to send execution error to Telegram: {log_e}")
 
     LOGGER.info(f"<---Bot Stopped-->")
+
+if __name__ == "__main__":
+    asyncio.get_event_loop().run_until_complete(main())
