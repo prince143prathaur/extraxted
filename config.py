@@ -9,6 +9,7 @@ class Config(object):
     BOT_TOKEN = os.environ.get("BOT_TOKEN", "6216840269:AAFNzApyRlXuZ94T3UZgd-XqNun2mA40kJU")
     API_ID = int(os.environ.get("API_ID", "7856100"))
     API_HASH = os.environ.get("API_HASH", "dba409d7e8d44ab5bb689378deea1792")
-    AUTH_USERS = "6473502061"
-    LOG_CHAT_ID = int(os.environ.get("LOG_CHAT_ID", "6473502061"))
+    AUTH_USERS = "7281824001"
+    LOG_CHAT_ID = int(os.environ.get("LOG_CHAT_ID", "7281824001"))
+
 
