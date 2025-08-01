@@ -7,6 +7,9 @@ from pyromod import listen
 from logging.handlers import RotatingFileHandler
 import traceback
 from helper import log_error_to_telegram
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
+
 
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(
@@ -68,6 +71,19 @@ async def main():
            LOGGER.error(f"Failed to send execution error to Telegram: {log_e}")
 
     LOGGER.info(f"<---Bot Stopped-->")
+# Keep bot alive
+class KeepAliveHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"Bot is alive!")
+
+def run_keepalive():
+    server = HTTPServer(('0.0.0.0', 10000), KeepAliveHandler)
+    server.serve_forever()
+
+threading.Thread(target=run_keepalive).start()
 
 if __name__ == "__main__":
     asyncio.get_event_loop().run_until_complete(main())
+
